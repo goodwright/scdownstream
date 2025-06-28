@@ -1,0 +1,40 @@
+{
+    "inputs": [
+        {
+            "name": "Sample Options",
+            "description": "Parameters relating to the sample being analysed.",
+            "advanced": false,
+            "params": {
+                "input": {
+                    "name": "Samples",
+                    "description": "The samples to process.",
+                    "required": true,
+                    "type": "csv",
+                    "takes_samples": false,
+                    "columns": [
+                        {
+                            "name": "sample",
+                            "type": "string",
+                            "required": true
+                        },
+                        {
+                            "name": "filtered",
+                            "type": "data",
+                            "required": true,
+                            "pattern": ".*\\.(h5ad|h5|csv|rds)$"
+                        },
+                        {
+                            "name": "unfiltered",
+                            "type": "data",
+                            "required": true,
+                            "pattern": ".*\\.(h5ad|h5|csv|rds)$"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": [
+        
+    ]
+}
