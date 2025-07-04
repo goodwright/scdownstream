@@ -15,19 +15,22 @@
                         {
                             "name": "sample",
                             "type": "string",
-                            "required": true
+                            "required": true,
+                            "render": true
                         },
                         {
                             "name": "filtered",
                             "type": "data",
                             "required": true,
-                            "pattern": ".*\\.(h5ad|h5|csv|rds)$"
+                            "pattern": ".*\\.(h5ad|h5|csv|rds)$",
+                            "render": true
                         },
                         {
                             "name": "unfiltered",
                             "type": "data",
                             "required": true,
-                            "pattern": ".*\\.(h5ad|h5|csv|rds)$"
+                            "pattern": ".*\\.(h5ad|h5|csv|rds)$",
+                            "render": true
                         }
                     ]
                 }
