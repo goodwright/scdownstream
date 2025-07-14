@@ -35,9 +35,325 @@
                     ]
                 }
             }
+        },
+        {
+            "name": "Tool options",
+            "description": "Options for various tools used in the pipeline.",
+            "advanced": false,
+            "params": {
+                "celltypist_model": {
+                    "name": "Celltypist Model",
+                    "type": "string",
+                    "description": "Specify the models to use for the celltypist cell type annotation. If you want to use multiple models, separate them with a comma. Available models can be found at https://www.celltypist.org/models."
+                }
+            }
+        },
+        {
+            "name": "Unify options",
+            "description": "Options for converting the input data to the unified format.",
+            "advanced": true,
+            "params": {
+                "unify_gene_symbols": {
+                    "name": "Unify Gene Symbols",
+                    "type": "boolean",
+                    "description": "Unify gene symbols to the latest version of the Ensembl database"
+                },
+                "duplicate_var_resolution": {
+                    "name": "Duplicate Var Resolution",
+                    "type": "string",
+                    "default": "sum",
+                    "description": "Method to aggregate gene expression values for non-unique genes",
+                    "valid": [
+                        "mean",
+                        "sum",
+                        "max",
+                        "make_unique"
+                    ]
+                },
+                "force_obs_cols": {
+                    "name": "Force Obs Cols",
+                    "type": "string",
+                    "description": "Force keeping certain columns in the merged AnnData object, even if they are not present in all samples"
+                }
+            }
+        },
+        {
+            "name": "Quality control options",
+            "description": "Options for quality control of the input data.",
+            "advanced": true,
+            "params": {
+                "ambient_removal": {
+                    "name": "Ambient Removal",
+                    "type": "string",
+                    "default": "decontx",
+                    "description": "Specify the tool to use for ambient RNA removal",
+                    "valid": [
+                        "none",
+                        "decontx",
+                        "cellbender",
+                        "soupx",
+                        "scar"
+                    ]
+                },
+                "doublet_detection": {
+                    "name": "Doublet Detection",
+                    "type": "string",
+                    "default": "scrublet",
+                    "description": "Specify the tools to use for doublet detection. Setting to 'none' will skip this step"
+                },
+                "doublet_detection_threshold": {
+                    "name": "Doublet Detection Threshold",
+                    "type": "number",
+                    "default": 1,
+                    "description": "Number of tools that need to agree on a doublet for it to be called as such"
+                },
+                "cellbender_epochs": {
+                    "name": "Cellbender Epochs",
+                    "type": "number",
+                    "default": 150,
+                    "description": "Number of epochs to train the CellBender model"
+                }
+            }
+        },
+        {
+            "name": "Integration options",
+            "description": "Options for integration of the input data. For configuration of the scVI/scANVI models, see the `scVI_options` section.",
+            "advanced": true,
+            "params": {
+                "integration_methods": {
+                    "name": "Integration Methods",
+                    "type": "string",
+                    "default": "scvi",
+                    "description": "Specify the tool to use for integration"
+                },
+                "integration_hvgs": {
+                    "name": "Integration Hvgs",
+                    "type": "number",
+                    "default": 0,
+                    "description": "Number of highly variable genes to use for integration. If set to 0, the number of highly variable genes will be automatically determined. If set to a negative number, all genes will be used."
+                },
+                "scvi_model": {
+                    "name": "Scvi Model",
+                    "type": "string",
+                    "description": "Path to a pre-trained scVI model, only relevant if scVI is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "exists": true
+                },
+                "scanvi_model": {
+                    "name": "Scanvi Model",
+                    "type": "string",
+                    "description": "Path to a pre-trained scANVI model, only relevant if scANVI is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "exists": true
+                },
+                "scimilarity_model": {
+                    "name": "Scimilarity Model",
+                    "type": "string",
+                    "default": "https://zenodo.org/records/10685499/files/model_v1.1.tar.gz",
+                    "description": "Path to a pre-trained scimilarity model, only relevant if scimilarity is selected in `integration_methods`. If provided, the model will be used for integration. Otherwise, a new model will be trained.",
+                    "exists": true
+                }
+            }
+        },
+        {
+            "name": "Extension options",
+            "description": "If you already produced an integrated AnnData object with this pipeline and want to add new data to it, you can specify the path to the base AnnData object and some information about it here. This will allow you to project the new data onto the existing integrated object.",
+            "advanced": true,
+            "params": {
+                "base_adata": {
+                    "name": "Base Adata",
+                    "type": "string",
+                    "description": "If you want to project new data onto an already integrated object, specify the path to the base AnnData object here",
+                    "exists": true
+                },
+                "base_label_col": {
+                    "name": "Base Label Col",
+                    "type": "string",
+                    "default": "label",
+                    "description": "The column in the base AnnData object that contains the label (e.g. cell type) information."
+                },
+                "base_embeddings": {
+                    "name": "Base Embeddings",
+                    "type": "string",
+                    "description": "The keys in the obsm of the base AnnData object that contain the embeddings (without leading `X_`). Required if `input` is not provided - otherwise it is ignored."
+                }
+            }
+        },
+        {
+            "name": "Clustering options",
+            "description": "Options for clustering the integrated data.",
+            "advanced": true,
+            "params": {
+                "clustering_resolutions": {
+                    "name": "Clustering Resolutions",
+                    "type": "string",
+                    "default": "0.5,1.0",
+                    "description": "Specify the resolutions for clustering"
+                },
+                "cluster_per_label": {
+                    "name": "Cluster Per Label",
+                    "type": "boolean",
+                    "description": "Create a UMAP and a clustering for each unique value in the label column (and for each integration method)"
+                },
+                "cluster_global": {
+                    "name": "Cluster Global",
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "Create a global UMAP and clustering (for each integration method)"
+                }
+            }
+        },
+        {
+            "name": "Resource options",
+            "description": "Options for resource allocation and CPU usage.",
+            "advanced": true,
+            "params": {
+                "memory_scale": {
+                    "name": "Memory Scale",
+                    "type": "number",
+                    "default": 1,
+                    "minimum": 1,
+                    "description": "Scale the memory requirements for each process by this factor. Should be increased if you have a large number of cells."
+                }
+            }
+        },
+        {
+            "name": "Pipeline options",
+            "description": "Options for selecting which tools should be used for certain tasks",
+            "advanced": true,
+            "params": {
+                "qc_only": {
+                    "name": "Qc Only",
+                    "type": "boolean",
+                    "description": "Only run the preprocessing steps, skip the integration and clustering steps"
+                },
+                "skip_liana": {
+                    "name": "Skip Liana",
+                    "type": "boolean",
+                    "description": "Skip the LIANA step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
+                },
+                "skip_rankgenesgroups": {
+                    "name": "Skip Rankgenesgroups",
+                    "type": "boolean",
+                    "description": "Skip the rank_genes_groups step. For large datasets, the pipeline might fail due to high memory usage in this step. Use this option to skip it."
+                },
+                "pseudobulk": {
+                    "name": "Pseudobulk",
+                    "type": "boolean",
+                    "description": "Perform pseudobulking"
+                },
+                "prep_cellxgene": {
+                    "name": "Prep Cellxgene",
+                    "type": "boolean",
+                    "description": "Prepare the output for visualisation in cellxgene"
+                }
+            }
+        },
+        {
+            "name": "scVI/scANVI options",
+            "description": "Options for the scVI and scANVI integration methods",
+            "advanced": true,
+            "params": {
+                "scvi_n_latent": {
+                    "name": "Scvi N Latent",
+                    "type": "number",
+                    "default": 30,
+                    "description": "Number of latent dimensions for scVI/scANVI"
+                },
+                "scvi_n_hidden": {
+                    "name": "Scvi N Hidden",
+                    "type": "number",
+                    "default": 128,
+                    "description": "Number of hidden units in the neural network for scVI/scANVI"
+                },
+                "scvi_n_layers": {
+                    "name": "Scvi N Layers",
+                    "type": "number",
+                    "default": 2,
+                    "description": "Number of layers in the neural network for scVI/scANVI"
+                },
+                "scvi_dispersion": {
+                    "name": "Scvi Dispersion",
+                    "type": "string",
+                    "default": "gene",
+                    "description": "Dispersion parameter for scVI/scANVI",
+                    "valid": [
+                        "gene",
+                        "gene-batch",
+                        "gene-label",
+                        "gene-cell"
+                    ]
+                },
+                "scvi_gene_likelihood": {
+                    "name": "Scvi Gene Likelihood",
+                    "type": "string",
+                    "default": "zinb",
+                    "description": "Gene likelihood for scVI/scANVI",
+                    "valid": [
+                        "zinb",
+                        "nb",
+                        "poisson",
+                        "normal"
+                    ]
+                },
+                "scvi_max_epochs": {
+                    "name": "Scvi Max Epochs",
+                    "type": "number",
+                    "description": "Maximum number of epochs for training scVI/scANVI. If not set, a heuristic provided by scVI/scANVI will be used."
+                },
+                "scvi_categorical_covariates": {
+                    "name": "Scvi Categorical Covariates",
+                    "type": "string",
+                    "description": "Categorical covariates for scVI/scANVI"
+                },
+                "scvi_continuous_covariates": {
+                    "name": "Scvi Continuous Covariates",
+                    "type": "string",
+                    "description": "Continuous covariates for scVI/scANVI"
+                }
+            }
+        },
+        {
+            "name": "Pseudobulking options",
+            "description": "Options for pseudobulking",
+            "advanced": true,
+            "params": {
+                "pseudobulk_groupby_labels": {
+                    "name": "Pseudobulk Groupby Labels",
+                    "type": "string",
+                    "description": "Group by labels for pseudobulking. If you want to use multiple labels, separate them with a comma."
+                },
+                "pseudobulk_min_num_cells": {
+                    "name": "Pseudobulk Min Num Cells",
+                    "type": "number",
+                    "description": "Minimum number of cells for pseudobulking",
+                    "default": 5
+                }
+            }
         }
     ],
     "outputs": [
-        
+        {
+            "name": "Final h5ad file",
+            "description": "The final h5ad file with all results.",
+            "filetype": "h5ad",
+            "process": "ADATA_EXTEND"
+        },
+        {
+            "name": "Metadata",
+            "description": "Metadata of the final h5ad file.",
+            "filetype": "csv",
+            "process": "ADATA_EXTEND"
+        },
+        {
+            "name": "Final RDS file",
+            "description": "Final RDS file with all results.",
+            "filetype": "rds",
+            "process": "ADATA_TORDS"
+        },
+        {
+            "name": "Quality control report",
+            "description": "MultiQC report of read and alignment quality control metrics.",
+            "filetype": "html",
+            "process": "MULTIQC"
+        }
     ]
 }
