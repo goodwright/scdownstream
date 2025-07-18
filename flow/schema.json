@@ -38,7 +38,7 @@
                     ]
                 },
                 "input_": {
-                    "key": "input",
+                    "param": "input",
                     "name": "Samples",
                     "description": "The samples to process.",
                     "modes": ["Sample Names"],
